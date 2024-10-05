@@ -25,7 +25,7 @@ def get_data(data_filepath='./data/processed/data_splits_0926.jblb', ec_filepath
     test_df_thrower = test_df_thrower.replace(-np.inf, np.nan)
     return train_df, test_df_time, test_df_random, test_df_thrower
 
-def process_data(train_df, test_dfs, features, target):
+def process_data(train_df, test_dfs, features, target, mirror=False):
     """
     Process the training and test DataFrames by scaling the features.
     
@@ -38,6 +38,12 @@ def process_data(train_df, test_dfs, features, target):
         tuple: Scaled training data, list of scaled test data, fitted scaler.
     """
     # Scale the training data
+    if mirror:
+        new_train_df = train_df.copy()
+        for col in [x for x in features if '_x' in x]:
+            new_train_df[col] = new_train_df[col] * -1 
+        train_df = pd.concat([train_df, new_train_df], ignore_index=True)
+
     X_train = train_df[features]
     X_train = X_train.fillna(X_train.median())
     scaler = StandardScaler()
@@ -140,11 +146,11 @@ def run_optuna_trials(data_config, model_config, suffix, delete_models=False, st
 
     return best_models, best_params
 
-def get_data_config(features, target, train_df, test_dfs):
+def get_data_config(features, target, train_df, test_dfs, mirror):
     new_features = [x for x in features if x in train_df]
     if len([x for x in features if x not in new_features]) > 0:
         print('features not used: ', [x for x in features if x not in new_features])
-    X_train_scaled, y_train, X_scaled_tests,y_tests, scaler = process_data(train_df, test_dfs, new_features, target)
+    X_train_scaled, y_train, X_scaled_tests,y_tests, scaler = process_data(train_df, test_dfs, new_features, target, mirror)
     data_config = {
         'train_df_raw': train_df,
         'test_dfs_raw': {
@@ -165,11 +171,11 @@ def get_data_config(features, target, train_df, test_dfs):
     }
     return data_config
 
-def get_best_model(study_name, storage, train_df, test_dfs, model_config, features, target):
+def get_best_model(study_name, storage, train_df, test_dfs, model_config, features, target, mirror):
     loaded_study = optuna.load_study(study_name=study_name, storage=storage)
     loaded_study.best_trial
-    data_config = get_data_config(features, target, train_df, test_dfs)
+    data_config = get_data_config(features, target, train_df, test_dfs, True)
     model = model_config['models'][study_name.split('_')[0]]['model_class'](**loaded_study.best_params)
     model.fit(data_config['train_data_final'][0], data_config['train_data_final'][1])
-    return model
+    return {'model':model, 'features':features, 'scaler':data_config['scaler']}
 
