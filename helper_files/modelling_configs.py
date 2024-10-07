@@ -10,7 +10,7 @@ player_context = ['thrower_completion_percentage', 'throw_ec_per_possession', 'd
                   'distance_direction_tfidf', 'backward_percentage', 'sideways_percentage', 'forward_percentage']
 
 model_config = {
-    'n_trials': 20, 
+    'n_trials': 10, 
     'models': {
         'logreg': {
             'model_name': 'logreg',

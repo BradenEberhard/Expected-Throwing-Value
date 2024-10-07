@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.ndimage import gaussian_filter
-from processing.tf_idf_functions import categorize_direction, calculate_directions, categorize_distance
+from processing.processing_functions.tf_idf_functions import categorize_direction, calculate_directions, categorize_distance
 
 
 def get_opponent_df(cp_grid):
