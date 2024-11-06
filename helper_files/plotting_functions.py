@@ -32,7 +32,7 @@ def get_opponent_df(cp_grid):
     opponent_df = opponent_df.rename({'receiver_x':'thrower_x', 'receiver_y':'thrower_y'}, axis=1)
     return opponent_df
 
-def generate_fv_grid(x_min=-26.66, x_max=26.67, y_min=0, y_max=120, grid_width=50, grid_height=120, include_interaction=True, default_columns=None):
+def generate_fv_grid(x_min=-26.66, x_max=26.67, y_min=0, y_max=120, grid_width=50, grid_height=120, default_columns=None):
     if default_columns is None:
         default_columns = {}
 
@@ -41,12 +41,6 @@ def generate_fv_grid(x_min=-26.66, x_max=26.67, y_min=0, y_max=120, grid_width=5
     xx, yy = np.meshgrid(x_values, y_values)
     grid_points = np.c_[xx.ravel(), yy.ravel()]
     grid_df = pd.DataFrame(grid_points, columns=['thrower_x', 'thrower_y'])
-    
-    if include_interaction:
-        grid_df['x_squared'] = grid_df['thrower_x'] ** 2
-        grid_df['y_squared'] = grid_df['thrower_y'] ** 2
-        grid_df['xy_interaction'] = grid_df['thrower_x'] * grid_df['thrower_y']
-        grid_df['throw_distance'] = np.sqrt(grid_df['thrower_x']**2 + grid_df['thrower_y']**2)
 
     for col, default_value in default_columns.items():
         grid_df[col] = default_value
@@ -108,7 +102,7 @@ def plot_heatmap(model, grid_df, grid_width, grid_height, title='', scaler=None,
 
 
 def generate_cp_grid(thrower_x, thrower_y, receiver_x_range=(-26.66, 26.67), receiver_y_range=(0, 120), 
-                           default_columns=None):
+                           default_columns=None, num_x=50, num_y=120):
     if default_columns is None:
         default_columns = {
             'times': 0,
@@ -119,8 +113,8 @@ def generate_cp_grid(thrower_x, thrower_y, receiver_x_range=(-26.66, 26.67), rec
             'possession_num': 0
         }
     
-    receiver_x_values = np.linspace(receiver_x_range[0], receiver_x_range[1], num=50)
-    receiver_y_values = np.linspace(receiver_y_range[0], receiver_y_range[1], num=120)
+    receiver_x_values = np.linspace(receiver_x_range[0], receiver_x_range[1], num=num_x)
+    receiver_y_values = np.linspace(receiver_y_range[0], receiver_y_range[1], num=num_y)
     
     receiver_x, receiver_y = np.meshgrid(receiver_x_values, receiver_y_values)
     
@@ -131,20 +125,9 @@ def generate_cp_grid(thrower_x, thrower_y, receiver_x_range=(-26.66, 26.67), rec
     grid_df['thrower_y'] = thrower_y
     grid_df['throw_distance'] = np.sqrt((grid_df['receiver_x'] - thrower_x) ** 2 + 
                                          (grid_df['receiver_y'] - thrower_y) ** 2)
-
-    # Calculate direction and categorize it
-    grid_df = calculate_directions(grid_df)
-    grid_df['direction_forward'] = (grid_df['direction'].apply(categorize_direction) == 'forward').astype(int)
-    grid_df['direction_sideways'] = (grid_df['direction'].apply(categorize_direction) == 'sideways').astype(int)
-    grid_df['direction_backward'] = (grid_df['direction'].apply(categorize_direction) == 'backward').astype(int)
-
-
-    # Categorize distance
-    grid_df = categorize_distance(grid_df)
-    grid_df['distance_short'] = grid_df['distance_category'] == 'short'
-    grid_df['distance_medium'] = grid_df['distance_category'] == 'medium'
-    grid_df['distance_long'] = grid_df['distance_category'] == 'long'
-    grid_df = grid_df.drop('distance_category', axis=1)
+    grid_df['x_diff'] = grid_df['receiver_x'] - grid_df['thrower_x']
+    grid_df['y_diff'] = grid_df['receiver_y'] - grid_df['thrower_y']
+    grid_df['throw_angle'] = np.abs((np.degrees(np.arctan2(grid_df['y_diff'], grid_df['x_diff'])) + 90) % 360 - 180)
     # Set default values for other columns
     grid_df['possession_num'] = default_columns['possession_num']
     grid_df['possession_throw'] = default_columns['possession_throw']
@@ -152,5 +135,5 @@ def generate_cp_grid(thrower_x, thrower_y, receiver_x_range=(-26.66, 26.67), rec
     grid_df['quarter_point'] = default_columns['quarter_point']
     grid_df['score_diff'] = default_columns['score_diff']
     grid_df['times'] = default_columns['times']
-    
+
     return grid_df

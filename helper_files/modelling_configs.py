@@ -1,13 +1,16 @@
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
 from xgboost import XGBClassifier
 
 thrower_context = ['thrower_x', 'thrower_y']
 receiver_context = ['receiver_x', 'receiver_y']
-throw_context = ['throw_distance', 'distance_short', 'distance_medium', 'distance_long', 
-                 'direction_forward', 'direction_sideways', 'direction_backward']
+throw_context = ['throw_distance', 'throw_angle', 'y_diff', 'x_diff']
 game_context = ['possession_num', 'possession_throw', 'game_quarter', 'quarter_point', 'score_diff', 'times']
 player_context = ['thrower_completion_percentage', 'throw_ec_per_possession', 'distance_tfidf', 'direction_tfidf', 
                   'distance_direction_tfidf', 'backward_percentage', 'sideways_percentage', 'forward_percentage']
+fv_features = thrower_context + game_context + ['thrower_x_squared', 'thrower_y_squared', 'thrower_interaction_squared']
 
 model_config = {
     'n_trials': 10, 

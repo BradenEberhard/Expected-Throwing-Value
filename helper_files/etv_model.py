@@ -36,19 +36,23 @@ class ETVModel:
 
             if 'score_diff' in opponent_df.columns:
                 opponent_df.loc[:, 'score_diff'] = -opponent_df.loc[:, 'score_diff']
-                return opponent_df
+
+            return opponent_df
 
         # 1. Get the completion probability predictions
         X_cp = self.cp_scaler.transform(df[self.cp_features])
         cp_preds = self.cp_model.predict_proba(X_cp)[:, 1]
 
         # 2. Get the field value (spatial) predictions
+        fv_df = df[self.fv_features]
+        X_fv_start = self.fv_scaler.transform(fv_df)
         receiver_features = [x.replace('thrower', 'receiver') for x in self.fv_features]
         fv_df = df[receiver_features]
         fv_df = fv_df.rename(columns={'receiver_x': 'thrower_x', 'receiver_y': 'thrower_y'})
-        X_fv = self.fv_scaler.transform(fv_df)
-        fv_preds = self.fv_model.predict_proba(X_fv)[:, 1]
-        fv_preds[df['receiver_y'] > 100] = 1
+        X_fv_end = self.fv_scaler.transform(fv_df)
+        fv_preds_start = self.fv_model.predict_proba(X_fv_start)[:, 1]
+        fv_preds_end = self.fv_model.predict_proba(X_fv_end)[:, 1]
+        fv_preds_end[df['receiver_y'] > 100] = 1
 
         # 3. Generate opponent features for spatial model
         opponent_df = get_opponent_df(fv_df)
@@ -56,7 +60,7 @@ class ETVModel:
         fv_preds_opponent = self.fv_model.predict_proba(X_fv_opponent)[:, 1]
 
         # 4. Compute ETV as (CP * FVo) - ((1 - CP) * FVd)
-        etv_preds = (cp_preds * fv_preds) - ((1 - cp_preds) * fv_preds_opponent)
+        etv_preds = (cp_preds * (fv_preds_end))**2 - ((1 - cp_preds) * fv_preds_opponent)**2
         if etv_only:
             return etv_preds
-        return cp_preds, fv_preds, fv_preds_opponent, etv_preds
+        return cp_preds, fv_preds_start, fv_preds_end, fv_preds_opponent, etv_preds

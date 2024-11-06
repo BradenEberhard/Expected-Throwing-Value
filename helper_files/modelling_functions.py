@@ -6,7 +6,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, confusion_matrix
 import optuna
 from imblearn.over_sampling import SMOTE
-
+from sklearn.utils import shuffle
 
 def get_data(data_filepath='./data/processed/data_splits_0926.jblb', ec_filepath='./data/processed/player_ec.jblb', include_ec=False):
     data = joblib.load(data_filepath)
@@ -94,6 +94,7 @@ def process_data(train_df, test_dfs, features, target, mirror=False, noise_facto
         X_test_scaled = scaler.transform(X_test)
         X_scaled_tests.append(X_test_scaled)
         y_tests.append(test_df[target].values)
+    X_train_scaled, y_train = shuffle(X_train_scaled, y_train, random_state=42)
 
     return X_train_scaled, y_train, X_scaled_tests, y_tests, scaler
 
@@ -155,7 +156,7 @@ def evaluate_models(best_models, data_config):
     
     return metrics_df
 
-def run_optuna_trials(data_config, model_config, suffix, delete_models=False, storage = 'sqlite:///optuna_dbs/spatial.db'):
+def run_optuna_trials(data_config, model_config, suffix, delete_models=False, storage = 'sqlite:///optuna_dbs/spatial.db', scoring='accuracy'):
     X, y, best_models, best_params = data_config['train_data_final'][0], data_config['train_data_final'][1], {}, {}
 
     # Loop over each model type in the configuration
@@ -166,7 +167,7 @@ def run_optuna_trials(data_config, model_config, suffix, delete_models=False, st
             model_params = {key: value(trial) if callable(value) else value for key, value in model_info['params'].items()}
             model = model_class(**model_params)
 
-            auc_scores = cross_val_score(model, X, y, cv=5, scoring='accuracy', error_score='raise')
+            auc_scores = cross_val_score(model, X, y, cv=5, scoring=scoring, error_score='raise')
             return auc_scores.mean()
         
         study_name = f"{model_key}_{suffix}"
