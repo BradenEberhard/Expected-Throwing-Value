@@ -5,16 +5,27 @@
 
 #####  Table of Contents
 
-- [ Overview](#-overview)
-- [ Features](#-features)
-- [ Repository Structure](#-repository-structure)
-- [ Modules](#-modules)
-- [ Getting Started](#-getting-started)
-    - [ Prerequisites](#-prerequisites)
-    - [ Installation](#-installation)
-    - [ Usage](#-usage)
-- [ Project Roadmap](#-project-roadmap)
-- [ Acknowledgments](#-acknowledgments)
+1. [Overview](#overview)
+2. [Models](#models)
+   - [Field Value (FV) Model](#field-value-fv-model)
+   - [Completion Percentage (CP) Model](#completion-percentage-cp-model)
+3. [Metrics](#metrics)
+4. [Metric Analysis](#metric-analysis)
+   - [Discrimination and Stability](#discrimination-and-stability)
+   - [Independence](#independence)
+   - [Relation to Established Metrics](#relation-to-established-metrics)
+5. [Applications](#applications)
+   - [Decision-Making](#decision-making)
+   - [Player Assessment](#player-assessment)
+6. [Repository Structure](#repository-structure)
+7. [Modules](#modules)
+   - [data](#data)
+   - [figures](#figures)
+   - [helper_files](#helper_files)
+   - [models](#models)
+   - [processing](#processing)
+8. [Getting Started](#getting-started)
+   - [Installation](#installation)
 
 ---
 
