@@ -4,3 +4,4 @@
 *.pyc
 *.db
 !throws.csv
+__pycache__

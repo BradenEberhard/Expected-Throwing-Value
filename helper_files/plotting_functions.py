@@ -6,26 +6,21 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.ndimage import gaussian_filter
 from processing.processing_functions.tf_idf_functions import categorize_direction, calculate_directions, categorize_distance
+from matplotlib.colors import Normalize
 
 
 def get_opponent_df(cp_grid):
-    opponent_df = cp_grid[['receiver_x',
+
+    opponent_df = cp_grid[[x for x in ['receiver_x',
     'receiver_y',
-    'possession_num',
-    'possession_throw',
     'game_quarter',
     'quarter_point',
     'score_diff',
-    'times']]
+    'times'] if x in cp_grid]] 
     opponent_df.loc[:, 'receiver_x'] = -opponent_df.loc[:, 'receiver_x']
     # discs turned over in either endzone are brought to the front line
     opponent_df.loc[:, 'receiver_y'] = (120 - opponent_df.loc[:, 'receiver_y']).clip(lower=20, upper=100)
     # the possession number increments, throw counter resets and score differential inverts
-    if 'possession_num' in opponent_df.columns:
-        opponent_df.loc[:, 'possession_num'] += 1
-
-    if 'possession_throw' in opponent_df.columns:
-        opponent_df.loc[:, 'possession_throw'] = 1
 
     if 'score_diff' in opponent_df.columns:
         opponent_df.loc[:, 'score_diff'] = -opponent_df.loc[:, 'score_diff']
@@ -61,10 +56,11 @@ def plot_heatmap(model, grid_df, grid_width, grid_height, title='', scaler=None,
     # Use the provided axis if available, otherwise use the current axis
     if ax is None:
         ax = plt.gca()
-    
-    # Plot the heatmap on the given axis
-    sns.heatmap(predicted_probabilities, cmap="YlGnBu", cbar_kws={'label': f'{title}'}, alpha=0.8, ax=ax)
-    
+
+    norm = Normalize(vmin=-1, vmax=1)
+
+    sns.heatmap(predicted_probabilities, cmap="coolwarm_r", cbar_kws={'label': f'{title}'}, 
+            alpha=0.8, ax=ax, norm=norm)
     # Add contour lines
     contours = np.arange(0, 1.1, contour_every)
     contour_plot = ax.contour(predicted_probabilities, levels=contours, colors='black', linestyles='--', linewidths=1, extent=[0, grid_width, 0, grid_height])
@@ -80,14 +76,15 @@ def plot_heatmap(model, grid_df, grid_width, grid_height, title='', scaler=None,
     
     if highlight_point is not None:
         highlight_x, highlight_y = highlight_point
-        ax.plot(highlight_x, highlight_y, 'ko', markersize=6, label="Highlighted Point")
+        ax.plot(highlight_x, highlight_y, 'ko', markersize=8, label="Highlighted Point")
     
 
     # Set plot labels and title
-    ax.set_title(f'{title}')
+    ax.set_title(f'{title}', fontweight='bold', fontsize=16)
     ax.set_xlabel('X Position')
     ax.set_ylabel('Y Position')
     ax.set_ylim([0, 120])
+    ax.set_xlim([0, 54])
 
     # Set custom ticks for the plot
     num_yticks = 13
@@ -97,6 +94,17 @@ def plot_heatmap(model, grid_df, grid_width, grid_height, title='', scaler=None,
     ax.set_xticklabels(np.round(np.linspace(-26.66, 26.67, num=10), 1).astype(int))
     
     ax.set_aspect('equal')
+
+    if title != 'Field Value Opponent':
+        ax.annotate('', xy=(53, 80), xytext=(53, 40), 
+                    arrowprops=dict(facecolor='black', edgecolor='black', 
+                                    arrowstyle='->', lw=3, mutation_scale=20))  # Increase mutation_scale for larger arrowhead
+    else:
+        ax.annotate('', xy=(53, 40), xytext=(53, 80), 
+                    arrowprops=dict(facecolor='black', edgecolor='black', 
+                                    arrowstyle='->', lw=3, mutation_scale=20))  # Increase mutation_scale for larger arrowhead
+
+
 
     return predicted_probabilities
 
@@ -129,8 +137,6 @@ def generate_cp_grid(thrower_x, thrower_y, receiver_x_range=(-26.66, 26.67), rec
     grid_df['y_diff'] = grid_df['receiver_y'] - grid_df['thrower_y']
     grid_df['throw_angle'] = np.abs((np.degrees(np.arctan2(grid_df['y_diff'], grid_df['x_diff'])) + 90) % 360 - 180)
     # Set default values for other columns
-    grid_df['possession_num'] = default_columns['possession_num']
-    grid_df['possession_throw'] = default_columns['possession_throw']
     grid_df['game_quarter'] = default_columns['game_quarter']
     grid_df['quarter_point'] = default_columns['quarter_point']
     grid_df['score_diff'] = default_columns['score_diff']

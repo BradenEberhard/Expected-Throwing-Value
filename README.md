@@ -18,9 +18,42 @@
 
 ---
 
-##  Overview
+# A Machine Learning Approach to Player Value and Decision Making in Professional Ultimate Frisbee  
 
-<code>❯ REPLACE-ME</code>
+## Overview  
+
+<code>❯ REPLACE-ME</code>  
+This project introduces a machine learning framework to evaluate player contributions and decision-making in professional Ultimate Frisbee, leveraging a dataset spanning four seasons (2021–2024) provided by the Ultimate Frisbee Association. The dataset includes over 327,000 throws from 604 games, offering unprecedented spatial and contextual detail.  
+
+## Objectives  
+
+- <code>❯ REPLACE-ME</code> **Completion Probability (CP) Model**: Estimates the likelihood of a throw being successfully completed based on spatial and contextual features.  
+- <code>❯ REPLACE-ME</code> **Field Value (FV) Model**: Quantifies the positional value of the field in terms of scoring probability.  
+- <code>❯ REPLACE-ME</code> **Metrics Development**: Combines insights from CP and FV models to assess player value, throwing performance, and team strategy.  
+
+## Key Contributions  
+
+- <code>❯ REPLACE-ME</code> **Dataset Insights**: Largest throw-level dataset in professional ultimate, enabling comprehensive spatial and contextual analysis.  
+- <code>❯ REPLACE-ME</code> **Advanced Analytics**: Moves beyond traditional counting statistics like goals and assists, offering more nuanced metrics for evaluating gameplay.  
+- <code>❯ REPLACE-ME</code> **Practical Applications**: Demonstrates use cases for identifying MVPs, optimizing team strategy, and uncovering undervalued players.  
+
+## Features Modeled  
+
+- <code>❯ REPLACE-ME</code> **Thrower and Receiver Context**: Coordinates, angles, and distances.  
+- <code>❯ REPLACE-ME</code> **Game Context**: Quarter, score differential, and time remaining.  
+
+## Methodology  
+
+- <code>❯ REPLACE-ME</code> **CP Model**: Predicts throw completion using features such as throw distance and angle.  
+- <code>❯ REPLACE-ME</code> **FV Model**: Evaluates field positioning and its contribution to scoring probability.  
+- <code>❯ REPLACE-ME</code> **Modeling Approach**: XGBoost and ensemble decision trees for robust predictions.  
+
+## Outcomes  
+
+<code>❯ REPLACE-ME</code>  
+The framework provides actionable metrics that redefine player evaluation and decision-making in professional ultimate, offering insights that parallel advanced analytics in other sports like baseball and football.  
+
+For more details, refer to the full paper.
 
 ---
 
@@ -34,14 +67,11 @@
 
 ```sh
 └── Expected-Throwing-Value/
-    ├── data
+    ├── data/processed
     │   └── throws.csv
-    ├── dataset_description
-    │   ├── descriptive_charts.ipynb
-    │   └── descriptive_tables.ipynb
-    ├── derived_metrics
-    │   └── expected_contribution.ipynb
     ├── figures
+    │   ├── descriptive_charts.ipynb
+    │   ├── descriptive_tables.ipynb
     │   └── etv_plots.ipynb
     ├── helper_files
     │   ├── etv_model.py
@@ -61,55 +91,13 @@
 
 ##  Modules
 
-<details closed><summary>derived_metrics</summary>
+<details closed><summary>data</summary>
 
 | File | Summary |
 | --- | --- |
-| [expected_contribution.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/derived_metrics/expected_contribution.ipynb) | <code>❯ REPLACE-ME</code> |
-
-</details>
-
-<details closed><summary>dataset_description</summary>
-
-| File | Summary |
-| --- | --- |
-| [descriptive_charts.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/dataset_description/descriptive_charts.ipynb) | <code>❯ REPLACE-ME</code> |
-| [descriptive_tables.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/dataset_description/descriptive_tables.ipynb) | <code>❯ REPLACE-ME</code> |
-
-</details>
-
-<details closed><summary>processing</summary>
-
-| File | Summary |
-| --- | --- |
-| [processing.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/processing/processing.ipynb) | <code>❯ This Jupyter Notebook contains the main data processing pipeline for analyzing throwing data. It includes data loading, cleaning, categorization, and feature extraction processes to prepare the dataset for modeling.</code> |
-
-</details>
-
-<details closed><summary>processing.processing_functions</summary>
-
-| File | Summary |
-| --- | --- |
-| [tf_idf_functions.py](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/processing/processing_functions/tf_idf_functions.py) | <code>❯ This Python module defines functions for calculating TF-IDF scores based on throw distances and directions. It categorizes throws, computes term frequencies, and merges results with training data to enhance the analysis of throwing performance.</code> |
-
-</details>
-
-<details closed><summary>helper_files</summary>
-
-| File | Summary |
-| --- | --- |
-| [plotting_functions.py](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/helper_files/plotting_functions.py) | <code>❯ REPLACE-ME</code> |
-| [modelling_configs.py](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/helper_files/modelling_configs.py) | <code>❯ REPLACE-ME</code> |
-| [etv_model.py](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/helper_files/etv_model.py) | <code>❯ REPLACE-ME</code> |
-| [modelling_functions.py](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/helper_files/modelling_functions.py) | <code>❯ REPLACE-ME</code> |
-
-</details>
-
-<details closed><summary>models</summary>
-
-| File | Summary |
-| --- | --- |
-| [etv_training.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/models/etv_training.ipynb) | <code>❯ REPLACE-ME</code> |
+| [throws.csv](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/data/throws.csv) | <code>❯ Example data from the dataset. Full data can be found. </code> |
+| [descriptive_tables.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/figures/descriptive_tables.ipynb) | <code>❯ Generates key descriptions for UFA data including number of games, points, players etc. </code> |
+| [etv_plots.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/figures/etv_plots.ipynb) | <code>❯ Generates key plots showcasing use cases for Expected Throw Value using a heatmap on the playing field for FV, CP and ETV. </code> |
 
 </details>
 
@@ -117,25 +105,45 @@
 
 | File | Summary |
 | --- | --- |
-| [etv_plots.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/figures/etv_plots.ipynb) | <code>❯ REPLACE-ME</code> |
+| [descriptive_charts.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/figures/descriptive_charts.ipynb) | <code>❯ Generates key visualizations for UFA data including example point, radial histogram and 3d radial chart of location and direction frequency. </code> |
+| [descriptive_tables.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/figures/descriptive_tables.ipynb) | <code>❯ Generates key descriptions for UFA data including number of games, points, players etc. </code> |
+| [etv_plots.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/figures/etv_plots.ipynb) | <code>❯ Generates key plots showcasing use cases for Expected Throw Value using a heatmap on the playing field for FV, CP and ETV. </code> |
 
 </details>
 
-<details closed><summary>meta_metrics</summary>
+<details closed><summary>helper_files</summary>
 
 | File | Summary |
 | --- | --- |
-| [etv_stability.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/meta_metrics/etv_stability.ipynb) | <code>❯ REPLACE-ME</code> |
+| [etv_model.py](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/helper_files/etv_model.py) | <code>❯ Class for ETV. Natively handles CP, FV and data interactions for predictions. </code> |
+| [helper_files_metrics.py](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/helper_files/helper_files_metrics.py) | <code>❯ contains functions for generating both novel and traditional player level metrics. </code> |
+| [modelling_configs.py](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/helper_files/modelling_configs.py) | <code>❯ Contains the config information for training CP, FV and ETV models. </code> |
+| [modelling_functions.py](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/helper_files/modelling_functions.py) | <code>❯ Functions for training model such as data processing pipeline, hyperparameter tuning, etc. </code> |
+| [plotting_functions.py](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/helper_files/plotting_functions.py) | <code>❯ Functions for plotting heatmaps. Calculates data for full field grid. </code> |
+
+</details>
+
+<details closed><summary>models</summary>
+
+| File | Summary |
+| --- | --- |
+| [etv_training.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/models/etv_training.ipynb) | <code>❯ Model training file. Saves models and generates performance metrics. </code> |
+| [feature_importance.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/models/feature_importance.ipynb) | <code>❯ SHAP implementation and exploration over different features. </code> |
+
+</details>
+
+
+<details closed><summary>processing</summary>
+
+| File | Summary |
+| --- | --- |
+| [processing.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/processing/processing.ipynb) | <code>❯ Contains the main data processing pipeline for analyzing throwing data. It includes data loading, cleaning, categorization, and feature extraction processes to prepare the dataset for modeling. </code> |
 
 </details>
 
 ---
 
 ##  Getting Started
-
-###  Prerequisites
-
-**JupyterNotebook**: `version x.y.z`
 
 ###  Installation
 
@@ -151,90 +159,7 @@ Build the project from source:
 ❯ cd Expected-Throwing-Value
 ```
 
-3. Install the required dependencies:
+3. Install the required dependencies (currently no requirements file):
 ```sh
 ❯ pip install -r requirements.txt
 ```
-
-###  Usage
-
-To run the project, execute the following command:
-
-```sh
-❯ jupyter nbconvert --execute notebook.ipynb
-```
-
-###  Tests
-
-Execute the test suite using the following command:
-
-```sh
-❯ pytest notebook_test.py
-```
-
----
-
-##  Project Roadmap
-
-- [X] **`Task 1`**: <strike>Implement feature one.</strike>
-- [ ] **`Task 2`**: Implement feature two.
-- [ ] **`Task 3`**: Implement feature three.
-
----
-
-##  Contributing
-
-Contributions are welcome! Here are several ways you can contribute:
-
-- **[Report Issues](https://github.com/BradenEberhard/Expected-Throwing-Value/issues)**: Submit bugs found or log feature requests for the `Expected-Throwing-Value` project.
-- **[Submit Pull Requests](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/CONTRIBUTING.md)**: Review open PRs, and submit your own PRs.
-- **[Join the Discussions](https://github.com/BradenEberhard/Expected-Throwing-Value/discussions)**: Share your insights, provide feedback, or ask questions.
-
-<details closed>
-<summary>Contributing Guidelines</summary>
-
-1. **Fork the Repository**: Start by forking the project repository to your github account.
-2. **Clone Locally**: Clone the forked repository to your local machine using a git client.
-   ```sh
-   git clone https://github.com/BradenEberhard/Expected-Throwing-Value
-   ```
-3. **Create a New Branch**: Always work on a new branch, giving it a descriptive name.
-   ```sh
-   git checkout -b new-feature-x
-   ```
-4. **Make Your Changes**: Develop and test your changes locally.
-5. **Commit Your Changes**: Commit with a clear message describing your updates.
-   ```sh
-   git commit -m 'Implemented new feature x.'
-   ```
-6. **Push to github**: Push the changes to your forked repository.
-   ```sh
-   git push origin new-feature-x
-   ```
-7. **Submit a Pull Request**: Create a PR against the original project repository. Clearly describe the changes and their motivations.
-8. **Review**: Once your PR is reviewed and approved, it will be merged into the main branch. Congratulations on your contribution!
-</details>
-
-<details closed>
-<summary>Contributor Graph</summary>
-<br>
-<p align="left">
-   <a href="https://github.com{/BradenEberhard/Expected-Throwing-Value/}graphs/contributors">
-      <img src="https://contrib.rocks/image?repo=BradenEberhard/Expected-Throwing-Value">
-   </a>
-</p>
-</details>
-
----
-
-##  License
-
-This project is protected under the [SELECT-A-LICENSE](https://choosealicense.com/licenses) License. For more details, refer to the [LICENSE](https://choosealicense.com/licenses/) file.
-
----
-
-##  Acknowledgments
-
-- List any resources, contributors, inspiration, etc. here.
-
----

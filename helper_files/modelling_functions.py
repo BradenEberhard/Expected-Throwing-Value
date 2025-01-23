@@ -3,9 +3,10 @@ import joblib
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import cross_val_score
-from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, confusion_matrix
+from sklearn.metrics import accuracy_score, roc_auc_score, f1_score, confusion_matrix, make_scorer
 import optuna
 from imblearn.over_sampling import SMOTE
+from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
 def get_data(data_filepath='./data/processed/data_splits_0926.jblb', ec_filepath='./data/processed/player_ec.jblb', include_ec=False):
@@ -27,7 +28,7 @@ def get_data(data_filepath='./data/processed/data_splits_0926.jblb', ec_filepath
     test_df_thrower = test_df_thrower.replace(-np.inf, np.nan)
     return train_df, test_df_time, test_df_random, test_df_thrower
 
-def process_data(train_df, test_dfs, features, target, mirror=False, noise_factor=0.0, smote=False):
+def process_data(train_df, test_dfs, features, target, mirror=True, noise_factor=0.0, smote=False):
     """
     Process the training and test DataFrames by scaling the features and applying optional data augmentation.
 
@@ -47,12 +48,17 @@ def process_data(train_df, test_dfs, features, target, mirror=False, noise_facto
     if mirror:
         # Apply mirroring to the data (negate '_x' features)
         new_train_df = train_df.copy()
-        for col in [x for x in features if '_x' in x]:
+        for col in [x for x in features if '_x' in x or 'x_diff' in x or 'throw_angle' in x]:
             new_train_df[col] = new_train_df[col] * -1  # Mirroring (negating values)
         # Combine original and augmented data
         train_df = pd.concat([train_df, new_train_df], ignore_index=True)
 
-    
+    # Scale the training data
+    X_train = train_df[features]
+    X_train = X_train.fillna(X_train.median())
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    y_train = train_df[target].values
 
     # Identify features with more than 2 unique values
     features_with_jitter = [feature for feature in features if train_df[feature].nunique() > 2]
@@ -78,13 +84,6 @@ def process_data(train_df, test_dfs, features, target, mirror=False, noise_facto
         train_df_resampled = pd.DataFrame(X_resampled, columns=features)
         train_df_resampled[target] = y_resampled
         train_df = train_df_resampled  # Replace original training data with resampled data
-
-    # Scale the training data
-    X_train = train_df[features]
-    X_train = X_train.fillna(X_train.median())
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    y_train = train_df[target].values
     
     # Scale the test data
     X_scaled_tests, y_tests = [], []
@@ -105,49 +104,55 @@ def attempt_delete(study_name, storage):
     except KeyError:
         pass
 
+def calculate_metrics(model, X, y):
+    # Make predictions
+    y_pred = model.predict(X)
+    y_pred_proba = model.predict_proba(X)[:, 1]  # Get probabilities for AUC
+
+    # Calculate metrics
+    accuracy = accuracy_score(y, y_pred)
+    auc = roc_auc_score(y, y_pred_proba)
+    f1 = f1_score(y, y_pred)
+
+    # Calculate NPV (Negative Predictive Value)
+    tn, fp, fn, tp = confusion_matrix(y, y_pred).ravel()
+    npv = tn / (tn + fn) if (tn + fn) > 0 else 0
+
+    # Calculate PPV (Positive Predictive Value)
+    ppv = tp / (tp + fp) if (tp + fp) > 0 else 0
+
+    # Calculate Sensitivity (Recall)
+    sensitivity = tp / (tp + fn) if (tp + fn) > 0 else 0
+
+    # Calculate Specificity
+    specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
+    
+    return accuracy, auc, f1, npv, ppv, sensitivity, specificity
+
 def evaluate_models(best_models, data_config):
     metrics_list = []
 
     for model_name, model in best_models.items():
         model_metrics = {'Model': model_name}
 
-        # Make predictions
-        y_pred = model.predict(data_config['train_data_final'][0])
-        y_pred_proba = model.predict_proba(data_config['train_data_final'][0])[:, 1]  # Get probabilities for AUC
-        y_test = (data_config['train_data_final'][1])
-        # Calculate metrics
-        accuracy = accuracy_score(y_test, y_pred)
-        auc = roc_auc_score(y_test, y_pred_proba)
-        f1 = f1_score(y_test, y_pred)
-        
-        # Calculate NPV (Negative Predictive Value)
-        tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
-        npv = tn / (tn + fn) if (tn + fn) > 0 else 0
-        test_name = 'train'
-        # Store metrics for the current test set
-        model_metrics[f'{test_name}_AUC'] = auc
-        model_metrics[f'{test_name}_Accuracy'] = accuracy
-        model_metrics[f'{test_name}_NPV'] = npv
-        # model_metrics[f'{test_name}_F1'] = f1
+        # Train data metrics
+        accuracy, auc, f1, npv, ppv, sensitivity, specificity = calculate_metrics(
+            model['model'], data_config['train_data_final'][0], data_config['train_data_final'][1]
+        )
+        model_metrics['train_AUC'] = auc
+        model_metrics['train_Accuracy'] = accuracy
+        model_metrics['train_NPV'] = npv
+        model_metrics['train_PPV'] = ppv
+
+        # Test data metrics
         for test_name, (X_test, y_test) in data_config['test_datas_final'].items():
-            # Make predictions
-            y_pred = model.predict(X_test)
-            y_pred_proba = model.predict_proba(X_test)[:, 1]  # Get probabilities for AUC
-
-            # Calculate metrics
-            accuracy = accuracy_score(y_test, y_pred)
-            auc = roc_auc_score(y_test, y_pred_proba)
-            f1 = f1_score(y_test, y_pred)
-            
-            # Calculate NPV (Negative Predictive Value)
-            tn, fp, fn, tp = confusion_matrix(y_test, y_pred).ravel()
-            npv = tn / (tn + fn) if (tn + fn) > 0 else 0
-
-            # Store metrics for the current test set
+            accuracy, auc, f1, npv, ppv, sensitivity, specificity = calculate_metrics(
+                model['model'], X_test, y_test
+            )
             model_metrics[f'{test_name}_AUC'] = auc
             model_metrics[f'{test_name}_Accuracy'] = accuracy
             model_metrics[f'{test_name}_NPV'] = npv
-            # model_metrics[f'{test_name}_F1'] = f1
+            model_metrics[f'{test_name}_PPV'] = ppv
 
         metrics_list.append(model_metrics)
 
@@ -156,7 +161,8 @@ def evaluate_models(best_models, data_config):
     
     return metrics_df
 
-def run_optuna_trials(data_config, model_config, suffix, delete_models=False, storage = 'sqlite:///optuna_dbs/spatial.db', scoring='accuracy'):
+def old_run_optuna_trials(data_config, model_config, suffix, delete_models=False, storage = 'sqlite:///optuna_dbs/spatial.db', scoring='accuracy'):
+
     X, y, best_models, best_params = data_config['train_data_final'][0], data_config['train_data_final'][1], {}, {}
 
     # Loop over each model type in the configuration
@@ -184,7 +190,7 @@ def run_optuna_trials(data_config, model_config, suffix, delete_models=False, st
 
     return best_models, best_params
 
-def get_data_config(features, target, train_df, test_dfs, mirror=False, noise_factor=0.0, smote=False):
+def get_data_config(features, target, train_df, test_dfs, mirror=True, noise_factor=0.0, smote=False):
     new_features = [x for x in features if x in train_df]
     if len([x for x in features if x not in new_features]) > 0:
         print('features not used: ', [x for x in features if x not in new_features])
@@ -209,7 +215,7 @@ def get_data_config(features, target, train_df, test_dfs, mirror=False, noise_fa
     }
     return data_config
 
-def get_best_model(study_name, storage, train_df, test_dfs, model_config, features, target, mirror=False, noise_factor=0.0, smote=False):
+def get_best_model(study_name, storage, train_df, test_dfs, model_config, features, target, mirror=True, noise_factor=0.0, smote=False):
     loaded_study = optuna.load_study(study_name=study_name, storage=storage)
     loaded_study.best_trial
     data_config = get_data_config(features, target, train_df, test_dfs, mirror, noise_factor, smote)
@@ -217,3 +223,57 @@ def get_best_model(study_name, storage, train_df, test_dfs, model_config, featur
     model.fit(data_config['train_data_final'][0], data_config['train_data_final'][1])
     return {'model':model, 'features':features, 'scaler':data_config['scaler']}
 
+def run_optuna_trials(data_config, model_config, suffix, delete_models=False, storage='sqlite:///optuna_dbs/spatial.db'):
+    best_models, best_params = {}, {}
+    # Loop over each model type in the configuration
+    for model_key, model_info in model_config['models'].items():
+        data_config_updated = {}
+
+        def objective(trial):
+            # Tune data processing hyperparameters
+            mirror = True
+            smote = False
+            noise_factor = trial.suggest_float("noise_factor", 0.0, 0.05)
+
+            # Generate a new data_config with these hyperparameters
+            nonlocal data_config_updated
+            data_config_updated = get_data_config(
+                features=data_config['features'],
+                target=data_config['target'],
+                train_df=data_config['train_df_raw'],
+                test_dfs=data_config['test_dfs_raw'],
+                mirror=mirror,
+                noise_factor=noise_factor,
+                smote=smote
+            )
+
+            X, y = data_config_updated['train_data_final']
+
+            # Create model instance with model-specific parameters
+            model_class = model_info['model_class']
+            model_params = {key: value(trial) if callable(value) else value for key, value in model_info['params'].items()}
+            model = model_class(**model_params)
+            if model_info['model_name'] == 'mlp':
+                X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+                model.fit(X_train, y_train)
+                y_pred_prob = model.predict_proba(X_test)[:, 1]  
+                auc_score = roc_auc_score(y_test, y_pred_prob)
+            else:
+                auc_score = cross_val_score(model, X, y, cv=5, scoring='roc_auc', error_score='raise').mean()
+
+            return auc_score
+
+        study_name = f"{model_key}_{suffix}"
+        if delete_models:
+            attempt_delete(study_name, storage)
+        
+        study = optuna.create_study(study_name=study_name, storage=storage, direction="maximize")
+        n_trials = model_config['n_trials'] if model_key != 'logreg' else 1
+        study.optimize(objective, n_trials=n_trials)
+
+        best_model = model_info['model_class'](**{k: v for k, v in study.best_params.items() if k not in ['smote', 'mirror', 'noise_factor']})
+        best_model.fit(data_config_updated['train_data_final'][0], data_config_updated['train_data_final'][1])
+        best_models[model_key] = {'model':best_model, 'features':data_config_updated['features'], 'scaler':data_config_updated['scaler']}
+        best_params[model_key] = study.best_params
+
+    return best_models, best_params, data_config_updated

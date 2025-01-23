@@ -17,8 +17,11 @@ class ETVModel:
         # Define feature sets for each model
         self.cp_features = cp_model['features']
         self.fv_features = fv_model['features']
+    
+    def predict_new(self, df):
+        return self.predict(df, etv_only=False, new_etv_only=True)
 
-    def predict(self, df, etv_only=True):
+    def predict(self, df, etv_only=True, new_etv_only=False):
         """Make predictions using both models and compute the ETV."""
 
         def get_opponent_df(df):
@@ -60,7 +63,8 @@ class ETVModel:
         fv_preds_opponent = self.fv_model.predict_proba(X_fv_opponent)[:, 1]
 
         # 4. Compute ETV as (CP * FVo) - ((1 - CP) * FVd)
-        etv_preds = (cp_preds * (fv_preds_end))**2 - ((1 - cp_preds) * fv_preds_opponent)**2
+        etv_preds = (cp_preds * (fv_preds_end)) - ((1 - cp_preds) * fv_preds_opponent)
+
         if etv_only:
-            return etv_preds
+            return etv_preds       
         return cp_preds, fv_preds_start, fv_preds_end, fv_preds_opponent, etv_preds
