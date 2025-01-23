@@ -66,5 +66,5 @@ class ETVModel:
         etv_preds = (cp_preds * (fv_preds_end)) - ((1 - cp_preds) * fv_preds_opponent)
 
         if etv_only:
-            return etv_preds       
+            return etv_preds        
         return cp_preds, fv_preds_start, fv_preds_end, fv_preds_opponent, etv_preds
