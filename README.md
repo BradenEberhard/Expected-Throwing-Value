@@ -90,7 +90,7 @@ For more details, refer to the full paper.
 
 | File | Summary |
 | --- | --- |
-| [all_games_1024.csv](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/data/throws.csv) | <code>❯ Processed UFA DATA from 2021 to 2024. </code> |
+| [all_games_1024.csv](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/data/all_games_1024.csv) | <code>❯ Processed UFA DATA from 2021 to 2024. </code> |
 
 
 </details>
