@@ -63,6 +63,8 @@ The metrics enable teams to make data-driven decisions:
 ## Player Assessment
 The EC and aEC metrics provide a more nuanced evaluation of player contributions compared to traditional yardage statistics. By incorporating positional and situational context, these metrics align closely with recognized elite performance, offering valuable insights for player development and team strategy.
 
+Similarly, xCP and CPOE capture previously overlooked aspects of throwing performance by quantifying the risk and the actual vs expected performance.
+
 For more details, refer to the full paper.
 
 ---
