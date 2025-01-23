@@ -1,5 +1,5 @@
 <p align="center">
-    <h1 align="center">EXPECTED-THROWING-VALUE</h1>
+    <h1 align="center">A Machine Learning Approach to Player Value and Decision Making in Professional Ultimate Frisbee</h1>
 </p>
 <br>
 
@@ -18,48 +18,43 @@
 
 ---
 
-# A Machine Learning Approach to Player Value and Decision Making in Professional Ultimate Frisbee  
+# Overview
+This project introduces novel metrics for ultimate frisbee, designed to capture aspects of player decision-making, execution quality, and positional value. These metrics offer fresh insights into player evaluation and strategic decision-making by addressing the limitations of traditional statistics. Our framework combines data-driven modeling with practical applications, aiming to enhance understanding and performance within the sport.
 
-## Overview  
+# Models
+We employ advanced statistical and machine learning models to develop and evaluate the proposed metrics. Key methodologies include Expected Throw Value (ETV) modeling, Completion Percentage Over Expected (CPOE) calculations, regression-based adjustments for Enhanced Completion (EC) and Adjusted Enhanced Completion (aEC), and shot selection analysis using Expected Completion Percentage (xCP). These models leverage large datasets from competitive play to ensure reliability and validity.
 
-<code>❯ REPLACE-ME</code>  
-This project introduces a machine learning framework to evaluate player contributions and decision-making in professional Ultimate Frisbee, leveraging a dataset spanning four seasons (2021–2024) provided by the Ultimate Frisbee Association. The dataset includes over 327,000 throws from 604 games, offering unprecedented spatial and contextual detail.  
+# Metrics
+The newly developed metrics include:
+- **Expected Throw Value (ETV):** A probabilistic measure of the value added by each throw, incorporating thrower, receiver, throw and game context.
+- **Completion Percentage Over Expected (CPOE):** A metric isolating the execution quality of throws relative to baseline expectations.
+- **Expected Contribution (EC) and Adjusted Expected Contribution (aEC):** Metrics that quantify positional value differences and normalize contributions across game contexts.
+- **Expected Completion Percentage (xCP):** A metric measuring the difficulty of attempted throws, focusing on shot selection and decision-making.
 
-## Objectives  
+These metrics aim to complement traditional measures like goals and assists, providing a more comprehensive view of performance.
 
-- <code>❯ REPLACE-ME</code> **Completion Probability (CP) Model**: Estimates the likelihood of a throw being successfully completed based on spatial and contextual features.  
-- <code>❯ REPLACE-ME</code> **Field Value (FV) Model**: Quantifies the positional value of the field in terms of scoring probability.  
-- <code>❯ REPLACE-ME</code> **Metrics Development**: Combines insights from CP and FV models to assess player value, throwing performance, and team strategy.  
+# Metric Analysis
 
-## Key Contributions  
+## Discrimination and Stability
+Discrimination measures a metric's ability to differentiate between players based on performance, while stability reflects its consistency over time. Comparative analysis with traditional metrics indicates that the novel metrics, such as ETV and CPOE, exhibit similar levels of discrimination and stability, making them reliable tools for player evaluation.
 
-- <code>❯ REPLACE-ME</code> **Dataset Insights**: Largest throw-level dataset in professional ultimate, enabling comprehensive spatial and contextual analysis.  
-- <code>❯ REPLACE-ME</code> **Advanced Analytics**: Moves beyond traditional counting statistics like goals and assists, offering more nuanced metrics for evaluating gameplay.  
-- <code>❯ REPLACE-ME</code> **Practical Applications**: Demonstrates use cases for identifying MVPs, optimizing team strategy, and uncovering undervalued players.  
+## Independence
+Independence evaluates whether a metric provides unique insights. Using a Gaussian copula model, we assess the dependency of each metric on traditional measures. Most novel metrics demonstrate strong independence, with exceptions like ETV, which primarily captures overall player involvement rather than unique decision-making insights. Adjusted metrics like aEC show greater independence, isolating specific performance aspects effectively.
 
-## Features Modeled  
+## Relation to Established Metrics
+We use hierarchical clustering and dendrogram visualization to analyze the relationships between new and traditional metrics. This analysis reveals expected alignments, such as R-EC with receiver-based metrics, and highlights distinct contributions of metrics like CPOE and xCP, which emphasize execution quality and shot selection.
 
-- <code>❯ REPLACE-ME</code> **Thrower and Receiver Context**: Coordinates, angles, and distances.  
-- <code>❯ REPLACE-ME</code> **Game Context**: Quarter, score differential, and time remaining.  
+# Applications
 
-## Methodology  
+## Decision-Making
+The metrics enable teams to make data-driven decisions:
+- **Field Plots:** ETV-based visualizations identify optimal throw targets and strategies, enhancing situational awareness and offensive efficiency.
+- **Feature Trends and Interactions:** SHAP analysis uncovers key factors influencing throw value, such as throw distance, positioning, and game state.
 
-- <code>❯ REPLACE-ME</code> **CP Model**: Predicts throw completion using features such as throw distance and angle.  
-- <code>❯ REPLACE-ME</code> **FV Model**: Evaluates field positioning and its contribution to scoring probability.  
-- <code>❯ REPLACE-ME</code> **Modeling Approach**: XGBoost and ensemble decision trees for robust predictions.  
-
-## Outcomes  
-
-<code>❯ REPLACE-ME</code>  
-The framework provides actionable metrics that redefine player evaluation and decision-making in professional ultimate, offering insights that parallel advanced analytics in other sports like baseball and football.  
+## Player Assessment
+The EC and aEC metrics provide a more nuanced evaluation of player contributions compared to traditional yardage statistics. By incorporating positional and situational context, these metrics align closely with recognized elite performance, offering valuable insights for player development and team strategy.
 
 For more details, refer to the full paper.
-
----
-
-##  Features
-
-<code>❯ REPLACE-ME</code>
 
 ---
 
