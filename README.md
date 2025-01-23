@@ -3,6 +3,11 @@
 </p>
 <br>
 
+### Authors
+- **Braden Eberhard**
+- **Jacob Miller, MS**
+- **Nate Sandholz, PhD**
+
 #####  Table of Contents
 
 1. [Overview](#overview)
