@@ -22,10 +22,19 @@
 This project introduces novel metrics for ultimate frisbee, designed to capture aspects of player decision-making, execution quality, and positional value. These metrics offer fresh insights into player evaluation and strategic decision-making by addressing the limitations of traditional statistics. Our framework combines data-driven modeling with practical applications, aiming to enhance understanding and performance within the sport.
 
 # Models
-We employ advanced statistical and machine learning models to develop and evaluate the proposed metrics. Key methodologies include Expected Throw Value (ETV) modeling, Completion Percentage Over Expected (CPOE) calculations, regression-based adjustments for Enhanced Completion (EC) and Adjusted Enhanced Completion (aEC), and shot selection analysis using Expected Completion Percentage (xCP). These models leverage large datasets from competitive play to ensure reliability and validity.
+
+This project uses advanced statistical and machine learning models to assess player performance and throw value in Ultimate Frisbee, focusing on Completion Percentage (CP) and Field Value (FV).
+
+### Field Value (FV) Model
+
+The FV model predicts the probability that a point results in a goal, based on the thrower’s position and the broader game context. This model focuses on understanding the strategic value of various throw locations on the field and how these locations, combined with game circumstances, affect the likelihood of a goal. 
+
+### Completion Percentage (CP) Model
+
+The CP model estimates the likelihood that a pass will be successfully completed, considering the thrower, receiver, throw, and game contexts. Unique to this model are features that capture both the receiver’s positions on the field, as well as the throw distance, throw angle, and the game state. This model emphasizes the mechanics of the pass itself, using these features to assess the probability of completion. 
 
 # Metrics
-The newly developed metrics include:
+The FV and CP models are used to develop the following novel metrics:
 - **Expected Throw Value (ETV):** A probabilistic measure of the value added by each throw, incorporating thrower, receiver, throw and game context.
 - **Completion Percentage Over Expected (CPOE):** A metric isolating the execution quality of throws relative to baseline expectations.
 - **Expected Contribution (EC) and Adjusted Expected Contribution (aEC):** Metrics that quantify positional value differences and normalize contributions across game contexts.
