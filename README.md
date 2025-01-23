@@ -62,7 +62,7 @@ For more details, refer to the full paper.
 
 ```sh
 └── Expected-Throwing-Value/
-    ├── data/processed
+    ├── data
     │   └── throws.csv
     ├── figures
     │   ├── descriptive_charts.ipynb
@@ -90,9 +90,8 @@ For more details, refer to the full paper.
 
 | File | Summary |
 | --- | --- |
-| [throws.csv](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/data/throws.csv) | <code>❯ Example data from the dataset. Full data can be found. </code> |
-| [descriptive_tables.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/figures/descriptive_tables.ipynb) | <code>❯ Generates key descriptions for UFA data including number of games, points, players etc. </code> |
-| [etv_plots.ipynb](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/figures/etv_plots.ipynb) | <code>❯ Generates key plots showcasing use cases for Expected Throw Value using a heatmap on the playing field for FV, CP and ETV. </code> |
+| [all_games_1024.csv](https://github.com/BradenEberhard/Expected-Throwing-Value/blob/main/data/throws.csv) | <code>❯ Processed UFA DATA from 2021 to 2024. </code> |
+
 
 </details>
 
