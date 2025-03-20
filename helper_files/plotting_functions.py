@@ -5,7 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.ndimage import gaussian_filter
-from processing.processing_functions.tf_idf_functions import categorize_direction, calculate_directions, categorize_distance
 from matplotlib.colors import Normalize
 
 
@@ -57,7 +56,7 @@ def plot_heatmap(model, grid_df, grid_width, grid_height, title='', scaler=None,
     if ax is None:
         ax = plt.gca()
 
-    norm = Normalize(vmin=-1, vmax=1)
+    norm = Normalize(vmin=0, vmax=1)
 
     sns.heatmap(predicted_probabilities, cmap="coolwarm_r", cbar_kws={'label': f'{title}'}, 
             alpha=0.8, ax=ax, norm=norm)
@@ -135,7 +134,7 @@ def generate_cp_grid(thrower_x, thrower_y, receiver_x_range=(-26.66, 26.67), rec
                                          (grid_df['receiver_y'] - thrower_y) ** 2)
     grid_df['x_diff'] = grid_df['receiver_x'] - grid_df['thrower_x']
     grid_df['y_diff'] = grid_df['receiver_y'] - grid_df['thrower_y']
-    grid_df['throw_angle'] = np.abs((np.degrees(np.arctan2(grid_df['y_diff'], grid_df['x_diff'])) + 90) % 360 - 180)
+    grid_df['throw_angle'] = (np.degrees(np.arctan2(grid_df['y_diff'], grid_df['x_diff'])) + 90) % 360 - 180
     # Set default values for other columns
     grid_df['game_quarter'] = default_columns['game_quarter']
     grid_df['quarter_point'] = default_columns['quarter_point']

@@ -10,7 +10,7 @@ baseline_metrics_total = ['goals',
  'offensive_efficiency',
  'total_yards',
  'total_scores',
- 'plus_minus']
+ 'plus_minus'] 
 
 baseline_metrics_per_possession = ['goals_per_possession',
  'assists_per_possession',

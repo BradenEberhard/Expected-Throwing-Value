@@ -149,7 +149,7 @@ def create_stats(data, stats):
         'completions': calculate_metric(data[data['completion'] == 1], ['thrower', 'year', 'gameID'], 'size', 'completions').rename(columns={'thrower': 'player'}),
         'throwing_yards': calculate_yards(data, ['thrower', 'year', 'gameID'], 'throwing_yards').rename(columns={'thrower': 'player'}),
         'receiving_yards': calculate_yards(data, ['receiver', 'year', 'gameID'], 'receiving_yards').rename(columns={'receiver': 'player'}),
-        # 'etv_decision': calculate_metric(data, ['thrower', 'year', 'gameID'], 'mean', 'etv_decision', 'etv_decision').rename(columns={'thrower': 'player'}),
+        'decision_prob': calculate_metric(data, ['thrower', 'year', 'gameID'], 'mean', 'decision_prob', 'decision_prob').rename(columns={'thrower': 'player'}),
         'hockey_assists': calculate_metric(data[data['hockey_assist'] == 1], ['thrower', 'year', 'gameID'], 'sum', 'hockey_assists', 'hockey_assist').rename(columns={'thrower': 'player'}),
         'games_played': calculate_metric(data, ['thrower', 'year', 'gameID'], 'count', 'games_played', 'gameID').rename(columns={'thrower': 'player'}),
         'offensive_team_goals': calculate_metric(data.drop_duplicates(['thrower', 'year', 'gameID', 'home_team_score', 'away_team_score', 'possession_num', 'game_quarter']),

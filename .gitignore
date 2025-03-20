@@ -3,5 +3,6 @@
 .DS_Store
 *.pyc
 *.db
+*.gif
 !all_games_1024.csv
 __pycache__
