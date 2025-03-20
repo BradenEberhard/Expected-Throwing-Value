@@ -159,15 +159,15 @@ Build the project from source:
 
 1. Clone the Expected-Throwing-Value repository:
 ```sh
-❯ git clone https://github.com/BradenEberhard/Expected-Throwing-Value
+git clone https://github.com/BradenEberhard/Expected-Throwing-Value
 ```
 
 2. Navigate to the project directory:
 ```sh
-❯ cd Expected-Throwing-Value
+cd Expected-Throwing-Value
 ```
 
 3. Install the required dependencies (currently no requirements file):
 ```sh
-❯ pip install -r requirements.txt
+pip install -r requirements.txt
 ```
