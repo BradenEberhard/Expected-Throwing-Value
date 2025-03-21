@@ -6,3 +6,4 @@
 *.gif
 !all_games_1024.csv
 __pycache__
+*/.ipynb_checkpoints
